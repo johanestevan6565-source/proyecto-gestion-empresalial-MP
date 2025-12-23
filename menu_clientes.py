@@ -1,4 +1,4 @@
-import clientes
+import fuctions_clientes
 
 print("\n menu \n")
 print("1. Agregar cliente")
@@ -23,17 +23,17 @@ while True: # Bucle principal del programaopcion = input("Seleccione una opcion:
                 print("El nombre solo puede contener letras, números y espacios. Intente de nuevo.")
             elif len(nombre.strip()) < 2: # Validar que el nombre tenga al menos 2 caracteres
                 print("El nombre debe tener al menos 2 caracteres. Intente de nuevo.")
-            elif buscar_clientes_por_nombre := clientes.buscar_clientes_por_nombre(nombre): # Verificar si el cliente ya existe
+            elif buscar_clientes_por_nombre := fuctions_clientes.buscar_clientes_por_nombre(nombre): # Verificar si el cliente ya existe
                 print("Ya existe un cliente con ese nombre:")
                 for id, datos in buscar_clientes_por_nombre.items():
                     print(f"ID: {id}, Nombre: {datos['nombre']}")
             else: # Agregar cliente válido
-                id_cliente = clientes.agregar_cliente(nombre)
+                id_cliente = fuctions_clientes.agregar_cliente(nombre)
                 print(f"Cliente agregado con ID: {id_cliente}")
 
     elif opcion == '2': # Listar clientes
         print("\n" + "="*30 + "\n" + "   LISTA DE CLIENTES")
-        todos_clientes = clientes.listar_clientes()
+        todos_clientes = fuctions_clientes.listar_clientes()
         if todos_clientes: # Verifica si hay clientes para mostrar
             for id, datos in todos_clientes.items():
                 print(f"ID: {id}, Nombre: {datos['nombre']}")
@@ -48,23 +48,23 @@ while True: # Bucle principal del programaopcion = input("Seleccione una opcion:
                 break
             elif entrada == '1': # Seleccionar cliente por ID
                 id_seleccionar = input("Ingrese el ID del cliente a seleccionar: ")
-                cliente = clientes.obtener_cliente(id_seleccionar)
+                cliente = fuctions_clientes.obtener_cliente(id_seleccionar)
                 if cliente: # Cliente encontrado
                     print(f"Cliente seleccionado: ID: {id_seleccionar}, Nombre: {cliente['nombre']}")
                 else:
                     print("No se encontró un cliente con ese ID.")
             elif entrada == '2': # Borrar cliente por ID
                 id_borrar = input("Ingrese el ID del cliente a borrar: ")
-                if clientes.eliminar_cliente(id_borrar):
+                if fuctions_clientes.eliminar_cliente(id_borrar):
                     print("Cliente eliminado exitosamente.")
                 else:
                     print("No se encontró un cliente con ese ID.")
             elif entrada == '3': # Editar cliente por ID
                 id_editar = input("Ingrese el ID del cliente a editar: ")
-                cliente = clientes.obtener_cliente(id_editar)
+                cliente = fuctions_clientes.obtener_cliente(id_editar)
                 if cliente:
                     nuevo_nombre = input("Ingrese el nuevo nombre del cliente: ")
-                    if clientes.editar_cliente(id_editar, nuevo_nombre):
+                    if fuctions_clientes.editar_cliente(id_editar, nuevo_nombre):
                         print("Cliente editado exitosamente.")
                     else:
                         print("No se encontró un cliente con ese ID.")

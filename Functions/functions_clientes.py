@@ -1,15 +1,18 @@
-from Data import json
-archivo = 'clientes.json'
+import json
+import os
+
+BASE_DIR = os.path.dirname(os.path.dirname(__file__)) # Directorio base del proyecto
+datos_clientes = os.path.join (BASE_DIR, 'Data', 'clientes', 'clientes.json') # Ruta al archivo JSON de clientes
 def cargar_clientes(): # Carga los clientes desde el archivo JSON
     try:
-        with open(archivo, 'r') as f:
+        with open(datos_clientes, 'r', encoding='utf-8') as f:
             return json.load(f)
     except FileNotFoundError:
         return {}
     
 def guardar_clientes(clientes): # Guarda los clientes en el archivo JSON
-    with open(archivo, 'w') as f:
-        json.dump(clientes, f, indent=4)
+    with open(datos_clientes, 'w', encoding='utf-8') as f:
+        json.dump(clientes, f, indent=4, ensure_ascii=False)
 
 def normalizar_nombre(nombre): # Normaliza el nombre del cliente
     return ' '.join(palabra.capitalize() for palabra in nombre.split())

@@ -1,0 +1,15 @@
+25/12/25 23:58
+
+-se hizo funcionar los archivos Json del menu de clientes para sobrescribir y redactar los datos propuestos. 
+-agregue el archivo "main".
+-cambios hechos en functions_clientes.py
+	-se uso un nuevo comando "import = os" ¨.path" ".dirname" "(__file__)"
+	-se cambio la ruta usada en la(s) líneas 6, 13. Añadiéndole "encoding = -8" además de cambiar la ruta de "datos" por "datos_clientes"
+	-se creo una nueva variable "BASE_DIR" y "datos_clientes"
+-cambios hechos en menu_clientes.py
+	-se cambio los textos     
+	print("\n menu \n")
+    	print("1. Agregar cliente")
+    	print("2. Listado de clientes")
+    	print("3. volver al menu principal")
+	de las líneas 3,4 y 5 a las líneas 7,8,9 y 10. se realizo este cambio para mantener las opciones dentro del bucle "while true" por motivos de practicidad y visualización general en la consola.

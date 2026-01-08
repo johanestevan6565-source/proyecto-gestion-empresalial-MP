@@ -1,7 +1,23 @@
 {
     "P1": {
-        "nombre": "Banano Criollo",
+        "nombre": "Banano Grueso",
         "precio": 2300.0,
-        "activo": true
+        "estado": false
+    },
+    "P2": {
+        "nombre": "Uraba",
+        "precio": 2400.0,
+        "estado": true
+    },
+    "P3": {
+        "nombre": "Banano Parejo",
+        "precio": 1500.0,
+        "estado": true
+    },
+    "P4": {
+        "nombre": "Bulto De Limon",
+        "precio": 80000.0,
+        "estado": true,
+        "activo": false
     }
 }

@@ -82,7 +82,7 @@ nota \[al terminar el modulo "menu\_productos" crear un commit y subirlo a githu
 
 
 
-28/12/25 10:11
+28/12/25 22:11
 
 -se ha encontrado un error en el modulo de "agregar producto" no se han integrado variables de fallo
 
@@ -92,7 +92,7 @@ nota\[verificar al detalle todas las variables de fallo en todos los submodulos 
 
 
 
-28/12/25 11:14
+28/12/25 23:14
 
 
 
@@ -129,4 +129,44 @@ nota: terminar de optimizar modulos y probar variables
 
 
 nota: al terminar las nuevas revisiones, guardar el progrso en commit y posteriormente subirlo a github
+
+
+
+07/01/26 23:05
+
+
+
+feliz año nuevo
+
+
+
+-se han corregido varios bugs de lógica que al intentar salir del submenu de productos, salía directamente al menu principal
+
+-se corrigio los errores lógicos de la verificación de los estados de los productos, ahora su estado se ve afectado por los parámetros "activo=none" y de ahi derivan sus estados de "true" como "activo" y "false" como "inactivo"
+
+-se ha implementado una nueva función llamada:
+
+&nbsp;	-#función de seleccionar producto \[215:232]
+
+-se ha optimizado la totalidad de los modulos
+
+&nbsp;	-"menu\_prodcutos.py"
+
+&nbsp;	-"functions\_productos.py"
+
+se han subido los cambios 
+
+
+
+
+
+08/01/26 00:23
+
+
+
+-se ha optimizado el código usado en los modulos relacionados con {clientes}
+
+-se ha reorganizado gran parte de las funciones de {clientes} 
+
+-se han implementado algunos cambios lógicos y de UX al modulo de "menu\_clientes" para facilitar su legibilidad y manutención a futuro 
 

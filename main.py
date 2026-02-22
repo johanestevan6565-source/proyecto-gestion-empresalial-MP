@@ -1,7 +1,8 @@
 # main.py
-from Modules.menu_clientes import menu_clientes
-from Modules.menu_productos import menu_productos
-
+from Debug.menu_clientes import menu_clientes
+from Debug.menu_inventarios import menu_test_inventarios
+from Debug.menu_productos import menu_productos
+from Debug.menu_proveedores import menu_proveedores
 def main():
     while True:
         print("\n=== SISTEMA DE GESTIÓN EMPRESARIAL ===")
@@ -23,16 +24,16 @@ def main():
 
         elif opcion == "3":
             print("Funcionalidad para registro de ventas por cliente próximamente.")
+            
 
         elif opcion == "4":
-            print("Funcionalidad para gestión de ventas próximamente.")
+            menu_test_inventarios() # Llama a la función del menú de inventarios   
 
         elif opcion == "5":
-            print("Funcionalidad para gestión de inventarios próximamente.")
+            menu_proveedores() # Llama a la función del menú de proveedores
 
         elif opcion == "6":
-            print("Funcionalidad para gestión de proveedores próximamente.")
-
+            print("Funcionalidad para gestión de informes próximamente.")
         elif opcion == "7":
             print("Funcionalidad para gestión de informes próximamente.")
 
@@ -44,3 +45,4 @@ def main():
             print("Opción no válida. Intente de nuevo.")
 if __name__ == "__main__":
     main()
+

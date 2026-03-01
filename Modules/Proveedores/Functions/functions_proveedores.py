@@ -1,15 +1,19 @@
-from Modules.config import PROVEEDORES_FILE
 import json
+import re
+
+from Modules.config import PROVEEDORES_FILE
+
 
 def cargar_proveedores():
-        try:
-            with open(PROVEEDORES_FILE, "r", encoding="utf-8") as f:
-                return json.load(f)
-        except FileNotFoundError:
-            data_inicial = {"contador": 0, "proveedores": []}
+    try:
+        with open(PROVEEDORES_FILE, "r", encoding="utf-8") as f:
+            return json.load(f)
+    except FileNotFoundError:
+        data_inicial = {"contador": 0, "proveedores": []}
         with open(PROVEEDORES_FILE, "w", encoding="utf-8") as f:
             json.dump(data_inicial, f, indent=4, ensure_ascii=False)
-        return data_inicial         
+        return data_inicial
+
 
 def generar_id_proveedor(data):
     data["contador"] += 1
@@ -30,7 +34,7 @@ def registrar_proveedor(nombre, contacto, telefono):
         "nombre": nombre,
         "contacto": contacto,
         "telefono": telefono,
-        "activo": True
+        "activo": True,
     }
 
     data["proveedores"].append(proveedor)
@@ -50,10 +54,12 @@ def validar_email(email):
     patron = r"^[\w\.-]+@[\w\.-]+\.\w+$"
     return re.match(patron, email) is not None
 
+
 def validar_telefono(telefono):
     if telefono == "" or telefono is None:
         return True
     return telefono.isdigit()
+
 
 def proveedor_existe(nombre, data):
     nombre = nombre.strip().lower()
@@ -61,6 +67,7 @@ def proveedor_existe(nombre, data):
         if p["nombre"].strip().lower() == nombre:
             return True
     return False
+
 
 def cambiar_estado_proveedor(proveedor_id, estado):
     data = cargar_proveedores()
@@ -73,12 +80,12 @@ def cambiar_estado_proveedor(proveedor_id, estado):
 
     return False
 
+
 def editar_proveedor(proveedor_id, nombre=None, contacto=None, telefono=None):
     data = cargar_proveedores()
 
     for p in data["proveedores"]:
         if p["id"] == proveedor_id:
-
             if nombre:
                 if proveedor_existe(nombre, data):
                     return False, "Nombre ya existe"
@@ -99,21 +106,15 @@ def editar_proveedor(proveedor_id, nombre=None, contacto=None, telefono=None):
 
     return False, "Proveedor no encontrado"
 
+
 def buscar_proveedor_por_nombre(texto):
     data = cargar_proveedores()
     texto = texto.lower()
+    return [p for p in data["proveedores"] if texto in p["nombre"].lower()]
 
-    resultados = []
-    for p in data["proveedores"]:
-        if texto in p["nombre"].lower():
-            resultados.append(p)
-
-    return resultados
 
 def listar_proveedores(solo_activos=True):
     data = cargar_proveedores()
-
     if solo_activos:
         return [p for p in data["proveedores"] if p["activo"]]
     return data["proveedores"]
-

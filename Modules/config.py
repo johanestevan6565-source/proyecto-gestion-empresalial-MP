@@ -25,6 +25,8 @@ os.makedirs(INVENTARIOS_DIR, exist_ok=True)
 CLIENTES_FILE = os.path.join(DATA_DIR, "clientes.json")
 PRODUCTOS_FILE = os.path.join(DATA_DIR, "productos.json")
 PROVEEDORES_FILE = os.path.join(DATA_DIR, "proveedores.json")
+CARTERA_FILE = os.path.join(DATA_DIR, "cartera.json")
+VENTAS_FILE = os.path.join(DATA_DIR, "ventas.json")
 
 # ==============================
 # PATHS PARA MÓDULOS
@@ -41,5 +43,11 @@ PATHS = {
     },
     "inventarios": {
         "ruta": INVENTARIOS_DIR
+    },
+    "cartera": {
+        "ruta": CARTERA_FILE
+    },
+    "ventas": {
+        "ruta": VENTAS_FILE
     }
 }

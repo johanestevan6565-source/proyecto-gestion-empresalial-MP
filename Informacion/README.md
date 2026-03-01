@@ -2,111 +2,47 @@
 
 ## 📌 Descripción
 
-Sistema integral de gestión empresarial desarrollado en Python, diseñado para
-administrar de forma organizada y persistente la información clave de una empresa.
+Sistema de gestión empresarial en Python para controlar operación comercial y contable:
+clientes, productos, ventas, inventario, cartera, proveedores y reportes.
 
-El sistema permite gestionar clientes, inventarios, movimientos financieros
-(ingresos, egresos, abonos y saldos), con capacidad de análisis, exportación
-de datos y visualización gráfica del estado general del negocio.
+## ✅ Qué se puede hacer ahora
 
-El proyecto está diseñado con una arquitectura modular y escalable, permitiendo
-su crecimiento progresivo hacia interfaces gráficas, aplicaciones web/móviles
-y automatización mediante chatbots.
+- Gestión de clientes, productos y proveedores.
+- Gestión de inventarios basada en eventos (compras, ventas y movimientos de empaque).
+- Módulo de ventas ligado a cliente con validación de stock antes de procesar.
+- Edición de precio/cantidad por ítem durante la venta **sin alterar** el precio global del producto.
+- Registro de empaque prestado al cliente dentro de la venta.
+- Cartera y finanzas:
+  - Cuentas por cobrar de clientes (cargo/abono).
+  - Flujo de efectivo (ingresos/egresos).
+  - Cuentas por pagar a proveedores (cargo/abono).
+  - Balance general (efectivo vs cartera vs deuda proveedores).
+- Reportes operativos:
+  - Stock de bodega al corte.
+  - Saldo neto de canastillas/empaque por proveedor.
+  - Búsqueda de eventos de inventario con filtros.
 
----
+## 🧩 Arquitectura base para pasar a interfaz gráfica
 
-## 🎯 Objetivo del proyecto
+El proyecto quedó preparado para una UI (Tkinter, PySide o Web) porque:
 
-Crear una aplicación funcional, confiable y extensible que facilite:
+- La lógica principal está encapsulada por módulos de dominio.
+- Productos y ventas ya usan clases (`Producto`, `ItemVenta`) para facilitar mantenimiento.
+- Los menús CLI son una capa delgada sobre funciones de negocio reutilizables.
 
-- La organización de clientes y sus operaciones
-- El control de inventarios por cliente y por día
-- El seguimiento financiero del negocio
-- La generación de reportes claros y exportables
-- El análisis del estado general de la empresa
+## 📂 Estructura principal
 
----
+```text
+Modules/
+├── Clientes/Functions/
+├── Productos/Functions/          # Clase Producto
+├── Ventas/Functions/             # Clase ItemVenta + procesar_venta
+├── Inventarios/Functions/        # Kardex por eventos y stock
+├── Finanzas/Functions/           # Cartera, flujo efectivo, CxP proveedores
+├── Proveedores/Functions/
+└── Reportes/Functions/           # Reportes operativos y financieros
+```
 
-## ⚙️ Funcionalidades actuales
+## 🚀 Siguiente paso recomendado
 
-- Gestión de clientes:
-  - Agregar clientes
-  - Listar clientes
-  - Buscar clientes por nombre
-  - Editar clientes
-  - Eliminar clientes
-- Persistencia de datos mediante archivos JSON
-- Arquitectura modular (separación de lógica, datos y menú)
-- Control de versiones con Git y GitHub
-
----
-
-## 🧩 Funcionalidades planificadas (Roadmap)
-
-- Gestión de inventarios:
-  - Inventarios por cliente
-  - Inventarios por fecha
-  - Control de productos y empaques
-- Gestión financiera:
-  - Ingresos y egresos
-  - Abonos y saldos pendientes
-  - Cartera de clientes
-- Reportes:
-  - Exportación a Excel
-  - Exportación a PDF
-- Análisis y visualización:
-  - Gráficos de balance general
-  - Gráficos de cartera y saldos
-  - Análisis histórico de datos
-- Interacción avanzada:
-  - Integración con chatbot para consultas de datos
-  - Versión web y/o móvil
-- Persistencia avanzada:
-  - Migración futura a base de datos (SQL)
-
----
-
-## 🗂️ Estructura del proyecto
-
-proyecto-gestion-empresarial/
-│
-├── main.py
-├── menu/
-│ └── menu_clientes.py
-│
-├── servicios/
-│ └── clientes.py
-│
-├── data/
-│ └── clientes.json
-│
-├── utils/
-│ └── validaciones.py
-│
-├── README.md
-└── .gitignore
-
-
----
-
-## 🛠️ Tecnologías utilizadas
-
-- Python 3
-- JSON (persistencia de datos)
-- Git / GitHub
-- Programación modular
-
----
-
-## 🚀 Estado del proyecto
-
-🟡 En desarrollo activo  
-El proyecto se encuentra en una fase inicial funcional, con enfoque en
-una base sólida que permita un crecimiento ordenado y profesional.
-
----
-
-## 📄 Licencia
-
-Proyecto de uso educativo y personal.  
-Licencia a definir en futuras versiones.
+Crear interfaz gráfica consumiendo directamente estas funciones de dominio, sin reescribir reglas de negocio.

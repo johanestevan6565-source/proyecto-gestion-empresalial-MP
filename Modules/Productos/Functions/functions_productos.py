@@ -1,34 +1,68 @@
-from Modules.config import PRODUCTOS_FILE
+from dataclasses import dataclass
 import json
 
-def cargar_productos(): # Carga los productos desde el archivo JSON, creando el archivo si no existe con una estructura inicial
+from Modules.config import PRODUCTOS_FILE
+
+
+@dataclass
+class Producto:
+    id: str
+    nombre: str
+    precio: float
+    tipo_venta: str
+    activo: bool = True
+
+    @classmethod
+    def from_dict(cls, data):
+        return cls(
+            id=data["id"],
+            nombre=data["nombre"],
+            precio=float(data["precio"]),
+            tipo_venta=data.get("tipo_venta", "unidad"),
+            activo=data.get("activo", True),
+        )
+
+    def to_dict(self):
+        return {
+            "id": self.id,
+            "nombre": self.nombre,
+            "precio": round(float(self.precio), 2),
+            "tipo_venta": self.tipo_venta,
+            "activo": self.activo,
+        }
+
+    def actualizar_precio(self, nuevo_precio):
+        self.precio = round(float(nuevo_precio), 2)
+
+
+def cargar_productos():
     try:
-        with open(PRODUCTOS_FILE, 'r', encoding='utf-8') as f:
+        with open(PRODUCTOS_FILE, "r", encoding="utf-8") as f:
             return json.load(f)
     except FileNotFoundError:
         data_inicial = {"productos": []}
-        with open(PRODUCTOS_FILE, 'w', encoding='utf-8') as f:
+        with open(PRODUCTOS_FILE, "w", encoding="utf-8") as f:
             json.dump(data_inicial, f, indent=4, ensure_ascii=False)
         return data_inicial
 
-def guardar_productos(data): # Guarda los productos en el archivo JSON, creando el archivo si no existe
-    with open(PRODUCTOS_FILE, 'w', encoding='utf-8') as f:
+
+def guardar_productos(data):
+    with open(PRODUCTOS_FILE, "w", encoding="utf-8") as f:
         json.dump(data, f, indent=4, ensure_ascii=False)
 
-def generar_id(data, nombre): # Genera un ID único para un nuevo producto basado en la primera letra del nombre y un número secuencial, asegurándose de no duplicar IDs existentes
+
+def generar_id(data, nombre):
     letra = nombre.strip()[0].upper()
     contador = 1
-    ids_existentes = [
-        p["id"] for p in data["productos"]
-        if p["id"].startswith(letra)
-    ]
+    ids_existentes = [p["id"] for p in data["productos"] if p["id"].startswith(letra)]
     while True:
         nuevo_id = f"{letra}{contador:02}"
         if nuevo_id not in ids_existentes:
             return nuevo_id
         contador += 1
 
-def validar_nombre(nombre): # Valida el nombre del producto, asegurándose de que no esté vacío, no exceda los 50 caracteres y solo contenga letras y espacios
+
+def validar_nombre(nombre):
     if not nombre or not nombre.strip():
         return False, "El nombre no puede estar vacío"
     if len(nombre.strip()) > 50:
@@ -37,7 +71,8 @@ def validar_nombre(nombre): # Valida el nombre del producto, asegurándose de qu
         return False, "Solo letras y espacios"
     return True, ""
 
-def validar_precio(precio): # Valida el precio del producto, asegurándose de que sea un número válido y mayor a 0
+
+def validar_precio(precio):
     try:
         precio = float(precio)
     except ValueError:
@@ -46,21 +81,24 @@ def validar_precio(precio): # Valida el precio del producto, asegurándose de qu
         return False, "El precio debe ser mayor a 0"
     return True, ""
 
-def validar_tipo_venta(tipo): # Valida el tipo de venta del producto, asegurándose de que sea "unidad" o "kg"
+
+def validar_tipo_venta(tipo):
     tipo = tipo.lower()
     if tipo not in ["unidad", "kg"]:
         return False, "Tipo inválido. Debe ser 'unidad' o 'kg'"
     return True, ""
 
-def producto_existe(nombre, data, excluir_id=None): # Verifica si un producto con el mismo nombre ya existe, excluyendo un ID específico si se proporciona (útil para edición)
+
+def producto_existe(nombre, data, excluir_id=None):
     for p in data["productos"]:
         if p["nombre"].lower() == nombre.lower():
-            if excluir_id and p["id"] == excluir_id:
+            if excluir_id and p["id"].lower() == excluir_id.lower():
                 continue
             return True
     return False
 
-def agregar_producto(nombre, precio, tipo_venta): # Agrega un nuevo producto después de validar el nombre y el precio, y asegurándose de que no exista un producto con el mismo nombre
+
+def agregar_producto(nombre, precio, tipo_venta):
     data = cargar_productos()
 
     valido, mensaje = validar_nombre(nombre)
@@ -74,49 +112,63 @@ def agregar_producto(nombre, precio, tipo_venta): # Agrega un nuevo producto des
         return False, mensaje
     if producto_existe(nombre, data):
         return False, "El producto ya existe"
-    nuevo = {
-        "id": generar_id(data, nombre),
-        "nombre": nombre.strip().title(),
-        "precio": round(float(precio), 2),
-        "tipo_venta": tipo_venta.lower(),
-        "activo": True
-    }
 
-    data["productos"].append(nuevo)
+    producto = Producto(
+        id=generar_id(data, nombre),
+        nombre=nombre.strip().title(),
+        precio=round(float(precio), 2),
+        tipo_venta=tipo_venta.lower(),
+        activo=True,
+    )
+
+    data["productos"].append(producto.to_dict())
     guardar_productos(data)
     return True, "Producto agregado correctamente"
 
-def editar_producto(producto_id, nombre=None, precio=None): # Edita un producto existente, permitiendo cambiar el nombre y/o el precio después de validar los nuevos valores y asegurándose de que el nuevo nombre no esté registrado por otro producto
+
+def obtener_producto_por_id(producto_id):
     data = cargar_productos()
     for p in data["productos"]:
         if p["id"].lower() == producto_id.lower():
+            return Producto.from_dict(p)
+    return None
+
+
+def editar_producto(producto_id, nombre=None, precio=None):
+    data = cargar_productos()
+    for i, p in enumerate(data["productos"]):
+        if p["id"].lower() == producto_id.lower():
+            producto = Producto.from_dict(p)
             if nombre is not None:
                 valido, mensaje = validar_nombre(nombre)
                 if not valido:
                     return False, mensaje
                 if producto_existe(nombre, data, excluir_id=producto_id):
                     return False, "Nombre ya registrado"
-                p["nombre"] = nombre.strip().title()
+                producto.nombre = nombre.strip().title()
             if precio is not None:
                 valido, mensaje = validar_precio(precio)
                 if not valido:
                     return False, mensaje
-                p["precio"] = round(float(precio), 2)
+                producto.actualizar_precio(precio)
+
+            data["productos"][i] = producto.to_dict()
             guardar_productos(data)
             return True, "Producto actualizado"
     return False, "Producto no encontrado"
 
-def cambiar_estado_producto(producto_id, activo): # Cambia el estado de un producto a activo o inactivo, buscando el producto por su ID y actualizando su estado
+
+def cambiar_estado_producto(producto_id, activo):
     data = cargar_productos()
     for p in data["productos"]:
-        if p["id"] == producto_id:
+        if p["id"].lower() == producto_id.lower():
             p["activo"] = activo
             guardar_productos(data)
             return True, "Estado actualizado"
     return False, "Producto no encontrado"
 
 
-def listar_productos(activo=None): # Lista los productos, filtrando por estado activo o inactivo si se especifica, o mostrando todos si no se proporciona un filtro
+def listar_productos(activo=None):
     data = cargar_productos()
     resultados = []
     for p in data["productos"]:
@@ -124,7 +176,8 @@ def listar_productos(activo=None): # Lista los productos, filtrando por estado a
             resultados.append(p)
     return resultados
 
-def buscar_producto(entrada, activo=None): # Busca productos por ID o nombre, filtrando por estado activo o inactivo si se especifica, y devolviendo una lista de resultados que coincidan con la entrada
+
+def buscar_producto(entrada, activo=None):
     data = cargar_productos()
     entrada = entrada.strip().lower()
     resultados = []
@@ -139,14 +192,6 @@ def buscar_producto(entrada, activo=None): # Busca productos por ID o nombre, fi
             resultados.append(p)
     return resultados if resultados else None
 
-def editar_precio_producto(producto_id, nuevo_precio): # Edita el precio de un producto específico, validando el nuevo precio antes de actualizarlo
-    data = cargar_productos()
-    for p in data["productos"]:
-        if p["id"].lower() == producto_id.lower():
-            valido, mensaje = validar_precio(nuevo_precio)
-            if not valido:
-                return False, mensaje
-            p["precio"] = round(float(nuevo_precio), 2)
-            guardar_productos(data)
-            return True, "Precio actualizado"
-    return False, "Producto no encontrado"
+
+def editar_precio_producto(producto_id, nuevo_precio):
+    return editar_producto(producto_id, precio=nuevo_precio)
